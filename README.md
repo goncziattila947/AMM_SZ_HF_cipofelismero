@@ -1,1 +1,74 @@
-Cipő Felismerő és Osztályozó ProjektMélytanulási osztályozó modellek fejlesztése képek alapján történő márkafelismerésre és nemi kategória (férfi/női) meghatározására.📖 Fogalmak és AlapismeretekMélytanulási osztályozó modell (Deep Learning Classifier): Olyan mesterséges neurális hálózat, amely rétegeken keresztül megtanulja felismerni a képek vizuális mintázatait (vonalak, logók, formák), majd a képet besorolja egy adott kategóriába (pl. Adidas, Nike vagy Converse).Tanuló adathalmaz (Train set): A modell „tankönyve”. Olyan képek halmaza, ahol a modell tudja a helyes választ, és ezekből tanulja meg az összefüggéseket.Címke / Osztálycímke (Label): A helyes célváltozó egy adott képhez (pl. Nike vagy Férfi).Teszt adathalmaz (Test set): A „vizsgadolgozat”. Új, a tanítás során nem látott képek gyűjteménye, ahol nincs megadva a megoldás; a betanított modellnek önállóan kell megmondania a címkét.Keresztvalidáció (Cross-validation): A tanuló adatokat több részre (pl. 5 egyenlő szeletre) osztjuk. Felváltva 4 részből tanul a modell, és az 1 kimaradó részen ellenőrizzük a pontosságát. Ezzel kiszűrhető a véletlenszerű szerencse a kiértékelés során.Paraméteroptimalizálás / Hiperparaméter-hangolás: A modell működését szabályozó beállítások (pl. tanulási sebesség, kötegméret / batch size, rétegek száma) finomhangolása a lehető legjobb eredmény eléréséhez.Jósági mutatók (Metrics): Statisztikai mérőszámok, mint az Accuracy (összes esetből hányat talált el jól) és az F1-score (kiegyensúlyozott pontossági mutató).Annotáció: Kézi felcímkézés. A férfi/női feladathoz a képeket meg kell vizsgálni, és kézzel hozzárendelni a megfelelő osztályt.Transzfer tanulás (Transfer Learning): Hatalmas képadatbázisokon (pl. ImageNet) előre betanított neves hálózatok (ResNet, EfficientNet) újrahasznosítása. A 600 kép mélytanuláshoz kevés, ezért ennek alkalmazása kulcsfontosságú.🛠️ Ajánlott EszköztárTerületAjánlott eszközFejlesztői környezetGoogle ColabKeretrendszerPyTorch vagy TensorFlow / KerasKézi annotálásMappaelosztás / CSV táblázat szerintAdatbővítés (Data Augmentation)Albumentations vagy torchvision.transforms📋 A Feladat Felépítése Lépésről Lépésre1. Adatelőkészítés és annotáció1. feladat (Márka): A 600 kép mappákba rendezve található (Adidas/, Converse/, Nike/). A képeket be kell olvasni és a modellnek megfelelő méretre alakítani (pl. $224 \times 224$ képpont).2. feladat (Férfi/Női): A képhalmaz felosztása a csapattagok között, majd táblázatban rögzíteni minden képre a nemi osztályt. A szabályrendszert dokumentálni szükséges.2. Képbővítés (Data Augmentation)A korlátozott elemszám (600 kép) miatt túlilleszkedés (overfitting) léphet fel. Ennek megelőzésére a tanítás során kötelező az adatbővítés:Vízszintes tükrözés (horizontal flip)Enyhe forgatás (rotation)Színkorrekció és kontrasztmódosítás (color jitter)3. Modellválasztás és tanítás (Transfer Learning)Előtanított architektúra kiválasztása (pl. EfficientNet-B0 vagy ResNet50).Az utolsó osztályozó réteg cseréje:Márkafelismerés: 3 kimenetű réteg (Adidas, Converse, Nike).Nemfelismerés: 2 kimenetű réteg (Férfi, Női).Mindkét feladat betanítása 5-szörös keresztvalidációval (5-Fold Cross Validation).4. Kísérletezés és kiértékelésLegalább 2 különböző architektúra (pl. ResNet vs. MobileNet / EfficientNet) összehasonlítása számszerű eredményekkel.Tévesztési mátrix (Confusion Matrix) generálása az elhibázott osztályozások vizsgálatához.5. Teszt előrejelzés és dokumentációA végleges modellek futtatása a felcímkézetlen teszthalmazon és a predikciók mentése.Részletes beszámoló készítése: csapatmunka, annotációs szempontok, modellek összevetése és levont tanulságok.🏷️ Adatelőkészítés és Annotációs SzabályrendszerKépméret: Az összes nyers kép alapértelmezetten $240 \times 240$ képpontos.Osztályegyensúly (Class balance): Törekedni kell a megközelítőleg $50\% - 50\%$-os arányra a férfi és női címkék között. A kiegyensúlyozatlan adathalmaz torzításhoz (bias) vezethet a modell tanításakor.Unisex kizárása: Nem használható unisex címke, minden képet kötelezően be kell sorolni a két osztály egyikébe.Döntési Szempontok♀️ Női kategóriaFazon és felépítés: Karcsúsított, szűkített orr-rész, kecsesebb sziluett.Talpszerkezet: Emelt talp, platform (vastagított talp), magassarkú vagy balerina jellegű sneaker kialakítás.Részletek: Mélyebb bokakivágás, vékonyabb nyelv és fűzőkialakítás.Színvilág: Pasztell árnyalatok (rózsaszín, babakék, menta, lila), csillogó/metál elemek, virágminták, arany/rózsaarany díszítések.♂️ Férfi kategóriaFazon és felépítés: Széles, masszív talpszerkezet (különösen a sarokrésznél).Orrkialakítás: Robusztus, szögletesebb orrforma, szélesebb felsőrész.Típus: Masszív futó- vagy kosárlabdacipő felépítés, hangsúlyos párnázottság.Színvilág: Sötét, tompa tónusok (katonai zöld, földszínek, mélykék, antracit), fekete alapszín technikai neonszínekkel kombinálva.⚖️ Semleges / Unisex modellek feloldási szabályaArányok és méretérzet: Meg kell vizsgálni a cipő arányait. Ha masszívnak és nagynak tűnik (42–45-ös méret érzete), akkor Férfi, ha arányaiban keskeny és apróbb (36–39-es méret érzete), akkor Női besorolást kap.
+# Cipőfelismerő Mélytanulási Projekt
+
+## Alapfogalmak és Szakszavak
+
+* **Mélytanulási osztályozó modell (Deep Learning Classifier):** Olyan mesterséges neurális hálózat, amely rétegeken keresztül megtanulja felismerni a képek vizuális mintázatait (vonalak, logók, formák), majd a képet besorolja egy adott kategóriába (pl. Adidas, Nike vagy Converse).
+* **Tanuló adathalmaz (Train set):** A modell „tankönyve”. Olyan képek halmaza, ahol a modell tudja a helyes választ, és ezekből próbálja megtanulni az összefüggéseket.
+* **Címke / Osztálycímke (Label):** A helyes válasz az adott képre (pl. Nike vagy Férfi).
+* **Teszt adathalmaz (Test set):** A „vizsgadolgozat”[cite: 5]. Új, a tanítás során nem látott képek gyűjteménye, ahol nincs megadva a megoldás; a betanított modellnek önállóan kell megmondania a címkét.
+* **Keresztvalidáció (Cross-validation):** A tanuló adatokat több részre (pl. 5 egyenlő szeletre) osztjuk[cite: 5]. Felváltva 4 részből tanul a modell, és az 1 kimaradó részen ellenőrizzük a pontosságát. Ezzel kiszűrhető, hogy a modell csak a véletlen szerencse miatt teljesített-e jól.
+* **Paraméteroptimalizálás / Hiperparaméter-hangolás:** A modell működését szabályozó „tekerőgombok” (pl. tanulási sebesség, kötegnagyság, rétegek száma) beállítása úgy, hogy a lehető legpontosabb legyen a végeredmény.
+* **Jósági mutatók (Metrics):** Százalékos vagy statisztikai mérőszámok, mint az Accuracy (összes esetből hányat talált el jól) és az F1-score (kiegyensúlyozott pontossági mutató).
+* **Annotáció:** Kézi felcímkézés[cite: 5]. A férfi/női feladathoz a képeket meg kell nyitni, és kézzel rá kell írni az adathalmazra, hogy az adott cipő férfi vagy női modell.
+* **Transzfer tanulás (Transfer Learning):** Óriási adatbázisokon (pl. ImageNet) előre betanított neves hálózatok (ResNet, EfficientNet) újrahasznosítása. 600 kép mélytanuláshoz nagyon kevés, így ennek használata gyakorlatilag elengedhetetlen a jó eredményhez.
+
+---
+
+## Technológiai Stack és Eszközök
+
+| Terület | Ajánlott eszköz |
+| :--- | :--- |
+| **Fejlesztői környezet** | Google Colab |
+| **Keretrendszer** | PyTorch vagy TensorFlow / Keras |
+| **Kézi annotálás** | Mappaelosztás szerint |
+| **Adatbővítés** | Albumentations vagy torchvision.transforms |
+
+---
+
+## A feladat felépítése lépésről lépésre
+
+### 1. Adatelőkészítés és annotáció
+* **1. feladat (Márka):** A 600 kép már mappákba van rendezve (Adidas/, Converse/, Nike/)[cite: 5]. Ezeket be kell olvasni és méretre vágni (pl. 224x224 képpont).
+* **2. feladat (Férfi/Női):** Osszátok szét a 600 képet a csapattagok között, és egy táblázatban jelöljétek be mindegyikre, hogy férfi vagy női (a feladat kiemeli: unisex nem lehet, dönteni kell). Dokumentáljátok a döntési szabályaitokat (pl. színek, fazon, sarokmagasság alapján döntöttetek-e).
+
+### 2. Képbővítés (Data Augmentation)
+A 600 kép kevés, ezért tanítás közben alkalmazzatok horizontális tükrözést, kis mértékű forgatást és színkorrekciót, hogy a háló ne magolja be a képeket (ne lépjen fel túlilleszkedés / overfitting).
+
+### 3. Modellválasztás és tanítás (Transfer Learning)
+* Válasszatok egy bevált előtanított modellt (pl. EfficientNet-B0 vagy ResNet50).
+* Cseréljétek le az utolsó osztályozó réteget:
+  * A márkafelismerésnél egy **3 kimenetű** rétegre (Adidas, Converse, Nike).
+  * A nem felismerésnél egy **2 kimenetű** rétegre (Férfi, Női).
+* Tanítsátok be mindkét feladatot 5-szörös keresztvalidációval (5-Fold Cross Validation).
+
+### 4. Kísérletezés és kiértékelés
+* Próbáljatok ki legalább 2 különböző architektúrát (pl. ResNet vs. MobileNet vagy EfficientNet), és hasonlítsátok össze az eredményeket táblázatban.
+* Készítsetek tévesztési mátrixot (Confusion Matrix): ez vizuálisan megmutatja, hogy melyik márkát mivel keverte össze a rendszer.
+
+### 5. Teszt előrejelzés és dokumentáció
+* Futtassátok le a két végleges modellt a tanító címkék nélküli teszt halmazon, és mentsétek el a kapott osztálycímkéket az előírt formátumban.
+* Írjátok meg a beszámolót: mutassátok be a csapatmunkát, az annotáció szempontjait, a kipróbált modellek összehasonlítását és a levont tanulságokat.
+
+---
+
+## Első rész: Adatelőkészítés és Annotációs Szabályok
+
+* **Képméret:** Az összes kép 240x240 méretű.
+* **Módszer:** Manuálisan címkézni kell különböző megbeszélt szabályok alapján.
+* **Arányok:** Törekedni kell a nagyjából 50-50%-os arányra, mert a kiegyensúlyozatlan adathalmazon a neurális háló elfogulttá válhat.
+
+### Női kategória
+* Karcsúsított, szűkített orr-rész, kecsesebb sziluett.
+* Emelt talp, platform (vastagított talp), magassarkú jellegű vagy balerina-jellegű sneakerek.
+* Mélyebb kivágás a boka körül, vékonyabb nyelv és fűző[cite: 5].
+* Pasztell árnyalatok (rózsaszín, babakék, menta, lila), csillogó/metál elemek, virágminták, arany/rózsaarany részletek.
+
+### Férfi kategória
+* Széles, masszív talpszerkezet (különösen a sarokrésznél).
+* Robusztus, szögletesebb orrforma és szélesebb felsőrész.
+* Masszív futó- vagy kosárlabdacipő felépítés, vastag párnázottság.
+* Sötét, tompa színek (katonai zöld, földszínek, mélykék, antracit), neonszínekkel kombinált technikai fekete.
+
+### Unisex eset kezelése
+* **Arányok és méretérzet:** A képen látható cipő szélesnek, nagynak tűnik (42-45-ös méret arányai), vagy inkább keskeny, apróbb (36-39-es méret)?
+* **Szabály:** Nem lehet unisex, muszáj vagy női vagy férfi kategóriát választani!
