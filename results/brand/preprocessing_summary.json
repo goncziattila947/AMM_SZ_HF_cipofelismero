@@ -1,0 +1,18 @@
+{
+    "random_state": 42,
+    "image_size": [
+        224,
+        224
+    ],
+    "classes": [
+        "nike",
+        "adidas",
+        "converse"
+    ],
+    "counts": {
+        "train": 420,
+        "validation": 90,
+        "test": 90
+    },
+    "total_images": 600
+}
