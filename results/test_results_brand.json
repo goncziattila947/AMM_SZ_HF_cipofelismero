@@ -1,0 +1,6 @@
+{
+    "best_fold_used": 1,
+    "test_accuracy": 0.7666666666666667,
+    "test_macro_f1": 0.7685974887467425,
+    "test_samples_count": 90
+}
